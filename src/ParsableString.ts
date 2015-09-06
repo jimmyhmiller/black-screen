@@ -1,6 +1,7 @@
 import Language = require('./Language');
 import i = require('./Interfaces');
 import Aliases = require("./Aliases");
+import Functions = require("./Functions");
 
 class ParsableString implements i.Parsable {
     static language = new Language();
@@ -35,6 +36,7 @@ class ParsableString implements i.Parsable {
 
         const commandName = args.shift();
         const alias: string = Aliases.find(commandName);
+        const _function: string = Functions.find(commandName);
 
         if (alias) {
             const aliasArgs = this.getLexemes(alias);
@@ -44,6 +46,15 @@ class ParsableString implements i.Parsable {
                 return aliasArgs.concat(args);
             } else {
                 return this.expandToArray(alias).concat(args);
+            }
+        } else if (_function) {
+            const functionArgs = this.getLexemes(_function);
+            const isRecursive = functionArgs[0] == commandName;
+
+            if (isRecursive) {
+                return functionArgs.concat(args);
+            } else {
+                return this.expandToArray(_function).concat(args);
             }
         } else {
             return [commandName, ...args];

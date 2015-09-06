@@ -53,6 +53,8 @@ class Invocation extends events.EventEmitter {
 
             this.emit('end');
         } else {
+            console.log(command);
+            console.log(args);
             this.command = child_pty.spawn(command, args, {
                 columns: this.dimensions.columns,
                 rows: this.dimensions.rows,
